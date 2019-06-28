@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+     <meta charset="UTF-8">
+     <link rel="stylesheet" href="{{ url_for('static', filename='style_search.css') }}">
+      <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+      <title>Search My Books</title>
+   </head>
+
+   <h1>Search for a book or author</h1>
+   <form action="/search" method="GET">
+      <div class="search-box" >
+        <input type="text" name="book" class="search-txt" placeholder="Type to search for a book"/>
+        <button type="submit">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+   </form>
+</html>
+

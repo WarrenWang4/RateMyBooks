@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Book Results!</title>
+    </head>
+    <body>
+        <h1>Book Results</h1>
+
+        <div id="list5">
+	   		<ul>
+	   			{% for result in results %}
+	      		<li>{{ result['title'] }}
+	         		<ul>
+	            		<li>by {{ result['author'] }} in {{ result['year'] }}</li>
+	            		<li>isbn: {{ result['isbn'] }}</li>
+	         		</ul>
+	      		</li>
+	      		{% endfor %}
+	   		</ul>
+		</div>
+    </body>
+</html>
+
+
