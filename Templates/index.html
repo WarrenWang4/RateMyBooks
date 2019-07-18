@@ -1,32 +1,33 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Rate My Books</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style_index.css') }}">
-    </head>
+{% extends "layout.html" %}
 
-    <body>
-        <h1>Rate My Books</h1>
-        <form action="/", method="post">
-            <div class="imgcontainer">
-              <img src="/static/book-pic.jpeg" alt="book" class="book">
-            </div>
-          
-            <div class="container">
-              <label for="email"><b>Email</b></label>
-              <input type="text" placeholder="Enter Email" name="email" required>
-          
-              <label for="password"><b>Password</b></label>
-              <input type="password" placeholder="Enter Password" name="password" required>
-          
-              <button type="submit">Login</button>
-            </div>
+{% block head %}
+  <title>Rate My Books</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style_index.css') }}">
+{% endblock %}
 
-            <div class="container register">
-                <p>Don't have an account? <a href="/register">Register</a>.</p>
-            </div>
-            
-        </form>
-    </body>
- </html>
 
+
+{% block body %}
+  <h1>Welcome to Rate My Books</h1>
+  <form action="/", method="post">
+      
+      <div class="imgcontainer">
+        <img src="/static/book-pic.jpeg" alt="book" class="book">
+      </div>
+    
+      <div class="container">
+        <label for="email"><b>Email</b></label>
+        <input type="text" placeholder="Enter Email" name="email" required>
+    
+        <label for="password"><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="password" required>
+    
+        <button type="submit">Login</button>
+      </div>
+
+      <div class="container register">
+          <p>Don't have an account? <a href="/register">Register</a>.</p>
+      </div>
+      
+  </form>
+{% endblock %}

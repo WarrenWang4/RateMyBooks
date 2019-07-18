@@ -1,24 +1,32 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Book Results!</title>
-    </head>
-    <body>
-        <h1>Book Results</h1>
+{% extends "layout.html" %}
 
-        <div id="list5">
-	   		<ul>
-	   			{% for result in results %}
-	      		<li>{{ result['title'] }}
-	         		<ul>
-	            		<li>by {{ result['author'] }} in {{ result['year'] }}</li>
-	            		<li>isbn: {{ result['isbn'] }}</li>
-	         		</ul>
-	      		</li>
-	      		{% endfor %}
-	   		</ul>
-		</div>
-    </body>
-</html>
+{% block head %}
+	<title>Book Results</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<style>
+		h1 {
+			text-align: center;
+		}
+	</style>
+{% endblock %}
 
+
+{% block body %}
+	<h1>Book Results</h1>
+
+	<div class="w3-container">
+		<ul class="w3-ul w3-card-4 w3-light-grey">
+			{% for result in results %}
+				<a href="/book/{{result['isbn']}}">
+				<li class="w3-bar w3-hover-grey">
+	  				<span class="w3-large">{{ result['title'] }}</span><br>
+	     			<span>published in {{ result['year'] }} by {{ result['author'] }},</span>
+	        		<span>isbn: {{ result['isbn'] }}</span>
+	  			</li>
+	  			</a>
+  			{% endfor %}
+		</ul>
+	</div>
+{% endblock %}
 

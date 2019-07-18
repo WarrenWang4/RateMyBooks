@@ -7,6 +7,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
+import requests
+
 app = Flask(__name__)
 
 # Check for environment variable
@@ -41,7 +43,11 @@ def index():
         # Checking if username and password is found in the database
         if userInfo and check_password_hash(userInfo[2], request.form.get("password")):
 
-            return render_template("search.html")
+
+            session["id"] = userInfo[0]
+            session["email"] = userInfo[1]
+
+            return redirect("/search")
 
         else:
 
@@ -90,26 +96,87 @@ def register():
 def search():
     """ Get books results """
 
-    # Get the inputted book value by user
-    searchedResult = request.args.get("book")
+    if request.args.get("book") == None:
 
-    # Assign myResults to any string containing searchedResults
-    myResults = "%" + searchedResult + "%"
+        return render_template("search.html")
 
-    # Selecting all the books that are like myResults
-    resultData = db.execute("SELECT isbn, title, author, year FROM books WHERE \
-                        title LIKE :myResults OR \
-                        author LIKE :myResults",
-                        {"myResults": myResults})
+    else:
 
-    # If there us none, return error message
-    if resultData.rowcount == 0:
-        return render_template("error.html", message="search results not found")
+        if not request.args.get("book"):
+            return render_template("error.html", message="provide a book or author")
 
-    results = resultData.fetchall()
+        # Get the inputted book value by user
+        searchedResult = request.args.get("book")
 
-    
-    return render_template("results.html", results=results)
+        # Assign myResults to any string containing searchedResults
+        myResults = "%" + searchedResult + "%"
+
+        myResults = myResults.title()
+
+        # Selecting all the books that are like myResults
+        resultData = db.execute("SELECT isbn, title, author, year FROM books WHERE \
+                            title LIKE :myResults OR \
+                            author LIKE :myResults",
+                            {"myResults": myResults})
+
+        # If there us none, return error message
+        if resultData.rowcount == 0:
+            return render_template("error.html", message="search results not found")
+
+        results = resultData.fetchall()
+
+        
+        return render_template("results.html", results=results)
+
+
+@app.route("/book/<isbn>", methods=['GET','POST'])
+def book(isbn):
+
+    if request.method == "POST":
+
+        userEmail = session["email"]
+
+        rating = request.form.get("rating")
+        review = request.form.get("review")
+
+        rating = int(rating)
+
+        db.execute("INSERT INTO reviews (email, isbn, review, rating) VALUES \
+                    (:email, :isbn, :review, :rating)",
+                    {"email": userEmail, 
+                    "isbn": isbn, 
+                    "review": review, 
+                    "rating": rating})
+
+        db.commit()
+
+        return redirect("/book/" + isbn)
+
+    else:
+
+        bookData = db.execute("SELECT isbn, title, author, year FROM books WHERE \
+                            isbn = :isbn",
+                            {"isbn": isbn}).fetchall()
+
+        key = "t59leWaL2NACMvW9QrgoMg"
+
+        res = requests.get("https://www.goodreads.com/book/review_counts.json",
+                    params={"key": key, "isbns": isbn})
+       
+        if res.status_code != 200:
+            return render_template("error.html", message="API request unsuccessful")
+           
+        goodreadsData = res.json()
+
+        goodreadsData = goodreadsData['books'][0]
+
+        reviewData = db.execute("SELECT isbn, email, review, rating FROM reviews WHERE \
+                            isbn = :isbn",
+                            {"isbn": isbn}).fetchall()
+
+
+        return render_template("book.html", bookData=bookData, goodreadsData=goodreadsData, reviewData=reviewData)
+
 
 
 

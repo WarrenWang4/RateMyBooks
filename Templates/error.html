@@ -1,10 +1,17 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Error</title>
-    </head>
+{% extends "layout.html" %}
 
-    <body>
-        <h1>Error: {{ message }}</h1>
-    </body>
- </html>
+{% block head %}
+	<title>Error</title>
+	<style>
+	h1 {
+		text-align: center;
+		margin-top: 250px;
+	}
+	</style>
+{% endblock %}
+
+
+{% block body %}
+    <h1>Error: {{ message }}</h1>
+{% endblock %}
+

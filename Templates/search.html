@@ -1,12 +1,15 @@
-<!DOCTYPE html>
-<html>
-  <head>
+{% extends "layout.html" %}
+
+{% block head %}
      <meta charset="UTF-8">
      <link rel="stylesheet" href="{{ url_for('static', filename='style_search.css') }}">
       <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
       <title>Search My Books</title>
-   </head>
+{% endblock %}
 
+
+
+{% block body %}
    <h1>Search for a book or author</h1>
    <form action="/search" method="GET">
       <div class="search-box" >
@@ -16,5 +19,5 @@
         </button>
       </div>
    </form>
-</html>
+{% endblock %}
 
