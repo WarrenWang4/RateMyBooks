@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block head %}
-<title>{{ bookData[0]['title'] }}</title>
+<title>{{ bookData['title'] }}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <style>
@@ -138,16 +138,16 @@ input[type=submit]:hover {
 <div class="row">
   <div class="column">
     <div class="card">
-      <h1>{{ bookData[0]['title'] }}</h1>
-      <h3>Author: {{ bookData[0]['author'] }}</h3>
-      <h3>Year: {{ bookData[0]['year'] }}</h3>
-      <h3>ISBN: {{ bookData[0]['isbn'] }}</h3>
+      <h1>{{ bookData['title'] }}</h1>
+      <h3>Author: {{ bookData['author'] }}</h3>
+      <h3>Year: {{ bookData['year'] }}</h3>
+      <h3>ISBN: {{ bookData['isbn'] }}</h3>
     </div>
   </div>
 
   <div class="column">
   	<div class="card">
-      <img src="http://covers.openlibrary.org/b/isbn/{{ bookData[0]['isbn'] }}-M.jpg" width="140px">  
+      <img src="http://covers.openlibrary.org/b/isbn/{{ bookData['isbn'] }}-M.jpg" width="140px">  
     </div>
   </div>
   

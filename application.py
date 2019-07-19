@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, session, render_template, request, redirect
+from flask import Flask, session, render_template, request, redirect, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -120,7 +120,7 @@ def search():
                             {"myResults": myResults})
 
         # If there us none, return error message
-        if resultData.rowcount == 0:
+        if not resultData:
             return render_template("error.html", message="search results not found")
 
         results = resultData.fetchall()
@@ -154,14 +154,11 @@ def book(isbn):
 
     else:
 
-        bookData = db.execute("SELECT isbn, title, author, year FROM books WHERE \
-                            isbn = :isbn",
-                            {"isbn": isbn}).fetchall()
+        bookData = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": isbn}).fetchone()
 
         key = "t59leWaL2NACMvW9QrgoMg"
 
-        res = requests.get("https://www.goodreads.com/book/review_counts.json",
-                    params={"key": key, "isbns": isbn})
+        res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": key, "isbns": isbn})
        
         if res.status_code != 200:
             return render_template("error.html", message="API request unsuccessful")
@@ -170,16 +167,34 @@ def book(isbn):
 
         goodreadsData = goodreadsData['books'][0]
 
-        reviewData = db.execute("SELECT isbn, email, review, rating FROM reviews WHERE \
-                            isbn = :isbn",
-                            {"isbn": isbn}).fetchall()
+        reviewData = db.execute("SELECT * FROM reviews WHERE isbn = :isbn", {"isbn": isbn}).fetchall()
 
 
         return render_template("book.html", bookData=bookData, goodreadsData=goodreadsData, reviewData=reviewData)
 
+@app.route("/api/<isbn>", methods=["GET"])
+def book_api(isbn):
+
+    bookData = db.execute("SELECT * FROM books WHERE isbn = :isbn", {"isbn": isbn}).fetchone()
+
+    if not bookData:
+        return jsonify({"error": "Invalid ISBN"}), 422
+
+    key = "t59leWaL2NACMvW9QrgoMg"
+
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": key, "isbns": isbn})
+    goodreadsData = res.json()
+    goodreadsData = goodreadsData['books'][0]
+    review_count = goodreadsData['work_ratings_count']
+    average_rating = goodreadsData['average_rating']
 
 
+    apiData = {"title": bookData['title'], "author": bookData['author'], "year": bookData['year'], "isbn": bookData['isbn'], 
+            "review_count": review_count, "average_score": average_rating}
 
+    return jsonify(apiData)
+
+   
 
 
 
