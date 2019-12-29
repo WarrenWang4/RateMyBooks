@@ -1,5 +1,7 @@
 # RateMyBooks
 
+## Use the app here: https://rate-my-books.herokuapp.com/
+
 API Reference:
 
 Get HTTP request:
