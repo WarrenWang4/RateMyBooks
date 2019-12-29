@@ -7,6 +7,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
+import requests
 
 
 app = Flask(__name__)
